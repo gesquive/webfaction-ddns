@@ -26,7 +26,7 @@ __author__ = "Gus E"
 __copyright__ = "Copyright 2014"
 __credits__ = ["Gus E"]
 __license__ = "GPL"
-__version__ = "1.0"
+__version__ = "1.2"
 __maintainer__ = "Gus E"
 __email__ = "gesquive@gmail"
 __status__ = "Beta"
@@ -142,7 +142,7 @@ def main():
     dir_path = os.path.dirname(log_file)
     # if not os.path.exists(dir_path):
     #     os.makedirs(dir_path)
-    if os.access(log_file, os.W_OK):
+    if os.access(dir_path, os.W_OK):
         file_handler = logging.handlers.RotatingFileHandler(log_file,
                                                 maxBytes=LOG_SIZE, backupCount=9)
         file_formater = logging.Formatter('%(asctime)s,%(levelname)s,%(thread)d,%(message)s')
@@ -201,11 +201,6 @@ def get_config_path():
 
 
 def update_config(config_path, config, current_ip):
-    # config = ConfigParser.ConfigParser()
-    # config.add_section("Account")
-    # config.set("Account", 'UserName', webfaction_username)
-    # config.set("Account", 'Password', webfaction_password)
-    # config.set("Account", 'Domain', webfaction_domain)
     config.add_section("Local")
     config.set("Local", 'IP', current_ip)
     with open(config_path, 'wb') as configfile:
