@@ -96,8 +96,8 @@ def main():
                 print "Error: cannot access '%s'" % a
                 sys.exit()
 
+    config = ConfigParser.ConfigParser()
     if os.path.exists(config_path):
-        config = ConfigParser.ConfigParser()
         config.read(config_path)
 
         webfaction_username = config.get("Account", "UserName").strip()
@@ -119,7 +119,6 @@ def main():
         dir_path = os.path.dirname(config_path)
         if not os.path.exists(dir_path):
             os.makedirs(dir_path)
-        config = ConfigParser.ConfigParser()
         config.add_section("Account")
         config.set("Account", 'UserName', webfaction_username)
         config.set("Account", 'Password', webfaction_password)
@@ -165,11 +164,13 @@ def main():
             logger.info("Update forced from the command line")
             update_dns(webfaction_username, webfaction_password,
                 webfaction_domain, config_path, current_ip)
+            update_config(config_path, config, current_ip)
         elif last_ip != current_ip:
             logger.info("IP Changed from '%s' to '%s' updating DNS" %
                 (last_ip, current_ip))
             update_dns(webfaction_username, webfaction_password,
                 webfaction_domain, config_path, current_ip)
+            update_config(config_path, config, current_ip)
         else:
             logger.info("No changes.")
     except (KeyboardInterrupt, SystemExit):
@@ -199,6 +200,18 @@ def get_config_path():
     return locations[1]
 
 
+def update_config(config_path, config, current_ip):
+    # config = ConfigParser.ConfigParser()
+    # config.add_section("Account")
+    # config.set("Account", 'UserName', webfaction_username)
+    # config.set("Account", 'Password', webfaction_password)
+    # config.set("Account", 'Domain', webfaction_domain)
+    config.add_section("Local")
+    config.set("Local", 'IP', current_ip)
+    with open(config_path, 'wb') as configfile:
+        config.write(configfile)
+
+
 def update_dns(webfaction_username, webfaction_password,
                 webfaction_domain, config_path, current_ip):
     server = xmlrpclib.ServerProxy('https://api.webfaction.com/')
@@ -212,7 +225,7 @@ def update_dns(webfaction_username, webfaction_password,
 
     if home_override and home_override['a_ip'] == current_ip:
         logger.info("Remote DNS entry matches, no update needed")
-        sys.exit(0)
+        return
 
     if home_override:
         server.delete_dns_override(session_id, webfaction_domain, home_override['a_ip'])
@@ -220,15 +233,6 @@ def update_dns(webfaction_username, webfaction_password,
     server.create_dns_override(session_id, webfaction_domain, current_ip)
     logger.info("Successfully updated webfaction server")
 
-    config = ConfigParser.ConfigParser()
-    config.add_section("Account")
-    config.set("Account", 'UserName', webfaction_username)
-    config.set("Account", 'Password', webfaction_password)
-    config.set("Account", 'Domain', webfaction_domain)
-    config.add_section("Local")
-    config.set("Local", 'IP', current_ip)
-    with open(config_path, 'wb') as configfile:
-        config.write(configfile)
 
 
 def get_ip_address():
