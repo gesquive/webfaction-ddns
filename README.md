@@ -12,10 +12,10 @@ Steps to install:
 
 ----
 For example:
-Download and copy the script to your home directory and make it executable
+Download and copy the script to your /usr/local/bin directory and make it executable
 ```
-wget https://raw.github.com/gesquive/webfaction-ddns/master/webfaction-ddns.py ~
-chmod +x webfaction-ddns.py
+wget https://raw.github.com/gesquive/webfaction-ddns/master/webfaction-ddns.py -O /usr/local/bin/webfaction-ddns
+chmod +x /usr/local/bin/webfaction-ddns
 ```
 
 Run script once as the <user> that will run it regularly. This will create the
@@ -34,6 +34,6 @@ sudo chown <user>:<user> /var/log/webfaction-ddns
 
 Add entry to cron, for example, to run every hour:
 ```
-0 * * * * /usr/bin/python ~/webfaction-ddns.py
+0 * * * * /usr/bin/python /usr/local/bin/webfaction-ddns
 ```
 
