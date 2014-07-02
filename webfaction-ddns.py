@@ -201,7 +201,8 @@ def get_config_path():
 
 
 def update_config(config_path, config, current_ip):
-    config.add_section("Local")
+    if not config.has_section("Local"):
+        config.add_section("Local")
     config.set("Local", 'IP', current_ip)
     with open(config_path, 'wb') as configfile:
         config.write(configfile)
