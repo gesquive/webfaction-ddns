@@ -37,11 +37,15 @@ __status__ = "Beta"
 LOG_FILE = '/var/log/webfaction-ddns/' + os.path.splitext(__app__)[0] + '.log'
 LOG_SIZE = 1024*1024*200
 
-IP_CHECK_LIST = {
+IP_CHECK_LIST = [
                     'http://icanhazip.com',
+                    'http://whatismyip.akamai.com/',
+                    'http://whatsmyip.me/',
+                    'http://wtfismyip.com/text',
+                    'http://api.ipify.org/',
                     'http://ip.catnapgames.com',
-                    'http://ip.ryansanden.com'
-                }
+                    'http://ip.ryansanden.com',
+                ]
 
 verbose = False
 debug = False
