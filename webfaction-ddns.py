@@ -239,10 +239,12 @@ def get_ip_address():
     for site in IP_CHECK_LIST:
         try:
             content = urllib2.urlopen(site).read()
-            grab = re.findall('\d{2,3}.\d{2,3}.\d{2,3}.\d{2,3}',
+            grab = re.findall('\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}',
                 content)
             return grab[0]
         except urllib2.URLError:
+            continue
+        except IndexError:
             continue
 
     logger.error("Can't reach any IP checking site.")
